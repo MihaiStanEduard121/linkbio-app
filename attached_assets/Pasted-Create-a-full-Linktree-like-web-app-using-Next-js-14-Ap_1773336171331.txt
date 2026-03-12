@@ -1,0 +1,120 @@
+Create a full Linktree-like web app using Next.js 14 App Router and Tailwind CSS.
+
+The app must allow users to create accounts, log in, create their own link-in-bio page, and share their page URL like:
+
+/alex
+/john
+/user123
+
+The project MUST deploy on Vercel without errors and must build successfully.
+
+IMPORTANT RULES:
+
+* Use Next.js 14 with App Router
+* Use Tailwind CSS
+* Use TypeScript
+* Use npm only (NOT pnpm)
+* DO NOT use api-zod
+* DO NOT use Blob type
+* DO NOT use File type
+* DO NOT use upload libraries
+* DO NOT use edge runtime
+* DO NOT use experimental features
+* DO NOT use duplicate exports
+* DO NOT use external API generators
+* DO NOT use libraries that break build
+
+Build must NOT show errors like:
+
+Cannot find name 'File'
+Cannot find name 'Blob'
+Module already exported
+pnpm build failed
+exit code 2
+404 NOT_FOUND
+
+Use only stable Node.js compatible code.
+
+FEATURES:
+
+1. Landing Page
+
+* modern landing page like Linktree
+* hero section
+* login button
+* register button
+* preview profile card
+* responsive
+
+2. Authentication
+
+* email + password
+* simple local storage or JSON db
+* no external auth required
+
+3. Dashboard
+
+* add link
+* edit link
+* delete link
+* change username
+* change bio
+* avatar as URL string only
+
+4. Public profile page
+
+Route must work like:
+
+/username
+
+Show:
+avatar
+username
+bio
+buttons with links
+
+5. Project structure must be EXACT:
+
+app/
+layout.tsx
+page.tsx
+login/page.tsx
+register/page.tsx
+dashboard/page.tsx
+[username]/page.tsx
+
+lib/
+db.ts
+auth.ts
+
+public/
+
+styles/
+
+package.json
+next.config.js
+tailwind.config.js
+postcss.config.js
+tsconfig.json
+
+6. package.json scripts must be:
+
+"scripts": {
+"dev": "next dev",
+"build": "next build",
+"start": "next start"
+}
+
+7. Homepage must exist at:
+
+app/page.tsx
+
+8. Must run with:
+
+npm install
+npm run build
+npm run start
+
+9. Must deploy on Vercel without 404 error
+
+10. Return FULL CODE for all files.

@@ -1,0 +1,19 @@
+packages:
+  "framer-motion": "For buttery smooth UI animations and layout transitions"
+  "react-hook-form": "Form state management"
+  "@hookform/resolvers": "Zod integration for forms"
+  "zod": "Schema validation"
+  "clsx": "Class merging"
+  "tailwind-merge": "Tailwind class merging"
+
+images:
+  - path: "artifacts/linktree-app/public/images/hero-bg.png"
+    description: "Abstract dark background with vibrant fuchsia and violet glowing gradient orbs and subtle noise texture, 8k resolution, modern startup aesthetic"
+    aspect_ratio: "16:9"
+  - path: "artifacts/linktree-app/public/images/default-avatar.png"
+    description: "3D stylized cute colorful abstract shape avatar on a dark background, high quality render"
+    aspect_ratio: "1:1"
+
+notes:
+  - Using generated orval hooks from @workspace/api-client-react
+  - Storing JWT token in localStorage and injecting into requests via standard fetch RequestInit options
