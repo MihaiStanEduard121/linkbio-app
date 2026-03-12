@@ -1,92 +1,79 @@
-import { useState } from "react";
-import { Link, useLocation } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { Link, useLocation } from "wouter";
+import { Loader2, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Sparkles, Loader2 } from "lucide-react";
+
+import { Button, Input, Label } from "@/components/ui";
 import { useLogin } from "@workspace/api-client-react";
 import { setToken } from "@/lib/auth";
 
 const loginSchema = z.object({
-  email: z.string().email("Please enter a valid email"),
+  email: z.string().email("Invalid email address"),
   password: z.string().min(1, "Password is required"),
 });
 
-type LoginForm = z.infer<typeof loginSchema>;
-
 export default function Login() {
   const [, setLocation] = useLocation();
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const loginMutation = useLogin();
 
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>({
+  const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(loginSchema)
   });
 
-  const loginMutation = useLogin();
-
-  const onSubmit = async (data: LoginForm) => {
-    setErrorMsg(null);
+  const onSubmit = async (data: any) => {
     try {
-      const result = await loginMutation.mutateAsync({ data });
-      setToken(result.token);
+      const res = await loginMutation.mutateAsync({ data });
+      setToken(res.token);
       setLocation("/dashboard");
-    } catch (err: any) {
-      setErrorMsg(err.message || "Invalid credentials");
+    } catch (e: any) {
+      // Handled by mutation state mostly, but catch blocks prevent unhandled rejections
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-background">
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/20 blur-[120px] rounded-full pointer-events-none" />
+    <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden bg-background">
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-primary/20 blur-[120px] rounded-full mix-blend-screen" />
+        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-accent/20 blur-[120px] rounded-full mix-blend-screen" />
+      </div>
 
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md glass-panel p-8 sm:p-12 rounded-[2rem] relative z-10"
-      >
-        <div className="flex flex-col items-center text-center mb-8">
-          <Link href="/" className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-6 cursor-pointer hover:scale-105 transition-transform">
-            <Sparkles className="w-6 h-6 text-white" />
-          </Link>
-          <h1 className="text-3xl font-bold text-white mb-2">Welcome back</h1>
-          <p className="text-white/60">Enter your details to access your dashboard.</p>
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md relative z-10">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-display font-bold mb-2">Welcome back</h1>
+          <p className="text-white/60">Enter your credentials to access your dashboard</p>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-          {errorMsg && (
-            <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm text-center font-medium">
-              {errorMsg}
+        <div className="glass-panel p-8 sm:p-10 rounded-3xl">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div className="space-y-2">
+              <Label>Email</Label>
+              <Input type="email" placeholder="you@example.com" {...register("email")} />
+              {errors.email && <p className="text-destructive text-xs">{errors.email.message as string}</p>}
             </div>
-          )}
+            <div className="space-y-2">
+              <Label>Password</Label>
+              <Input type="password" placeholder="••••••••" {...register("password")} />
+              {errors.password && <p className="text-destructive text-xs">{errors.password.message as string}</p>}
+            </div>
+            
+            {loginMutation.isError && (
+              <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-sm text-center">
+                Invalid credentials or user not found.
+              </div>
+            )}
 
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="you@example.com" {...register("email")} />
-            {errors.email && <p className="text-destructive text-xs mt-1">{errors.email.message}</p>}
-          </div>
+            <Button type="submit" size="lg" className="w-full text-base" disabled={loginMutation.isPending}>
+              {loginMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin mr-2"/> : null}
+              Sign In <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+          </form>
 
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" placeholder="••••••••" {...register("password")} />
-            {errors.password && <p className="text-destructive text-xs mt-1">{errors.password.message}</p>}
-          </div>
-
-          <Button type="submit" className="w-full mt-4" size="lg" disabled={loginMutation.isPending}>
-            {loginMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : "Log in"}
-          </Button>
-        </form>
-
-        <p className="text-center text-sm text-white/60 mt-8">
-          Don't have an account?{" "}
-          <Link href="/register" className="text-primary hover:text-primary/80 font-medium hover:underline">
-            Sign up
-          </Link>
-        </p>
+          <p className="text-center mt-8 text-sm text-white/60">
+            Don't have an account? <Link href="/register" className="text-primary hover:underline font-semibold">Sign up</Link>
+          </p>
+        </div>
       </motion.div>
     </div>
   );

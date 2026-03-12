@@ -3,7 +3,7 @@
  * Do not edit manually.
  * Api
  * LinkBio API specification
- * OpenAPI spec version: 0.1.0
+ * OpenAPI spec version: 0.2.0
  */
 export interface HealthStatus {
   status: string;
@@ -31,6 +31,55 @@ export interface LoginRequest {
   password: string;
 }
 
+export type AppearanceTheme =
+  (typeof AppearanceTheme)[keyof typeof AppearanceTheme];
+
+export const AppearanceTheme = {
+  dark: "dark",
+  light: "light",
+  neon: "neon",
+  gradient: "gradient",
+  glass: "glass",
+  minimal: "minimal",
+} as const;
+
+export type AppearanceBtnStyle =
+  (typeof AppearanceBtnStyle)[keyof typeof AppearanceBtnStyle];
+
+export const AppearanceBtnStyle = {
+  solid: "solid",
+  outline: "outline",
+  ghost: "ghost",
+  pill: "pill",
+  shadow: "shadow",
+  neon: "neon",
+} as const;
+
+export type AppearanceFontStyle =
+  (typeof AppearanceFontStyle)[keyof typeof AppearanceFontStyle];
+
+export const AppearanceFontStyle = {
+  inter: "inter",
+  poppins: "poppins",
+  roboto: "roboto",
+  mono: "mono",
+  serif: "serif",
+  display: "display",
+} as const;
+
+export interface Appearance {
+  theme?: AppearanceTheme;
+  bgColor?: string;
+  bgGradientFrom?: string;
+  bgGradientTo?: string;
+  bgGradientAngle?: number;
+  textColor?: string;
+  btnStyle?: AppearanceBtnStyle;
+  btnRadius?: number;
+  btnShadow?: boolean;
+  fontStyle?: AppearanceFontStyle;
+}
+
 export interface UserProfile {
   id: string;
   email: string;
@@ -38,6 +87,7 @@ export interface UserProfile {
   bio?: string;
   avatarUrl?: string;
   createdAt?: string;
+  appearance?: Appearance;
 }
 
 export interface AuthResponse {
@@ -50,23 +100,60 @@ export interface Link {
   title: string;
   url: string;
   order: number;
+  enabled: boolean;
+  icon?: string;
   userId: string;
+  clicks?: number;
 }
 
 export interface PublicProfile {
   username: string;
   bio?: string;
   avatarUrl?: string;
+  appearance?: Appearance;
   links: Link[];
+}
+
+export interface UpdateProfileRequest {
+  username?: string;
+  bio?: string;
+  avatarUrl?: string;
+  appearance?: Appearance;
 }
 
 export interface CreateLinkRequest {
   title: string;
   url: string;
+  icon?: string;
 }
 
 export interface UpdateLinkRequest {
   title?: string;
   url?: string;
   order?: number;
+  enabled?: boolean;
+  icon?: string;
+}
+
+export interface ReorderLinksRequest {
+  linkIds: string[];
+}
+
+export interface LinkStat {
+  linkId: string;
+  title: string;
+  clicks: number;
+}
+
+export interface DailyStat {
+  date: string;
+  count: number;
+}
+
+export interface AnalyticsData {
+  totalViews: number;
+  totalClicks: number;
+  linkStats: LinkStat[];
+  recentViews: DailyStat[];
+  recentClicks: DailyStat[];
 }

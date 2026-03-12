@@ -6,12 +6,10 @@
  * OpenAPI spec version: 0.2.0
  */
 import type { Appearance } from "./appearance";
-import type { Link } from "./link";
 
-export interface PublicProfile {
-  username: string;
+export interface UpdateProfileRequest {
+  username?: string;
   bio?: string;
   avatarUrl?: string;
   appearance?: Appearance;
-  links: Link[];
 }

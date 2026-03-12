@@ -3,8 +3,9 @@
  * Do not edit manually.
  * Api
  * LinkBio API specification
- * OpenAPI spec version: 0.1.0
+ * OpenAPI spec version: 0.2.0
  */
+import type { Appearance } from "./appearance";
 
 export interface UserProfile {
   id: string;
@@ -13,4 +14,5 @@ export interface UserProfile {
   bio?: string;
   avatarUrl?: string;
   createdAt?: string;
+  appearance?: Appearance;
 }

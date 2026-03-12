@@ -15,7 +15,6 @@ export function clearToken() {
   localStorage.removeItem(TOKEN_KEY);
 }
 
-// Helper to inject the auth token into Orval generated hooks
 export function useApiAuth() {
   const token = getToken();
   return {

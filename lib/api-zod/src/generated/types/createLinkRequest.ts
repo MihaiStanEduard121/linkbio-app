@@ -3,10 +3,11 @@
  * Do not edit manually.
  * Api
  * LinkBio API specification
- * OpenAPI spec version: 0.1.0
+ * OpenAPI spec version: 0.2.0
  */
 
 export interface CreateLinkRequest {
   title: string;
   url: string;
+  icon?: string;
 }

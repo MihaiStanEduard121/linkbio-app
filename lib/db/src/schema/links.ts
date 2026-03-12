@@ -1,4 +1,4 @@
-import { pgTable, text, integer, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, integer, timestamp, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 import { usersTable } from "./users";
@@ -11,6 +11,8 @@ export const linksTable = pgTable("links", {
   title: text("title").notNull(),
   url: text("url").notNull(),
   order: integer("order").notNull().default(0),
+  enabled: boolean("enabled").notNull().default(true),
+  icon: text("icon").default(""),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

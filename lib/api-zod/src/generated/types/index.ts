@@ -3,17 +3,26 @@
  * Do not edit manually.
  * Api
  * LinkBio API specification
- * OpenAPI spec version: 0.1.0
+ * OpenAPI spec version: 0.2.0
  */
 
+export * from "./analyticsData";
+export * from "./appearance";
+export * from "./appearanceBtnStyle";
+export * from "./appearanceFontStyle";
+export * from "./appearanceTheme";
 export * from "./authResponse";
 export * from "./createLinkRequest";
+export * from "./dailyStat";
 export * from "./errorResponse";
 export * from "./healthStatus";
 export * from "./link";
+export * from "./linkStat";
 export * from "./loginRequest";
 export * from "./publicProfile";
 export * from "./registerRequest";
+export * from "./reorderLinksRequest";
 export * from "./successResponse";
 export * from "./updateLinkRequest";
+export * from "./updateProfileRequest";
 export * from "./userProfile";

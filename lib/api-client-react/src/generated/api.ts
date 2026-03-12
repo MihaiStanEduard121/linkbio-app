@@ -3,7 +3,7 @@
  * Do not edit manually.
  * Api
  * LinkBio API specification
- * OpenAPI spec version: 0.1.0
+ * OpenAPI spec version: 0.2.0
  */
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
@@ -17,6 +17,7 @@ import type {
 } from "@tanstack/react-query";
 
 import type {
+  AnalyticsData,
   AuthResponse,
   CreateLinkRequest,
   ErrorResponse,
@@ -25,6 +26,7 @@ import type {
   LoginRequest,
   PublicProfile,
   RegisterRequest,
+  ReorderLinksRequest,
   SuccessResponse,
   UpdateLinkRequest,
   UpdateProfileRequest,
@@ -41,7 +43,6 @@ type Awaited<O> = O extends AwaitedInput<infer T> ? T : never;
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 /**
- * Returns server health status
  * @summary Health check
  */
 export const getHealthCheckUrl = () => {
@@ -521,7 +522,7 @@ export function useGetPublicProfile<
 }
 
 /**
- * @summary Update current user profile
+ * @summary Update current user profile and appearance
  */
 export const getUpdateProfileUrl = () => {
   return `/api/dashboard/profile`;
@@ -584,7 +585,7 @@ export type UpdateProfileMutationBody = BodyType<UpdateProfileRequest>;
 export type UpdateProfileMutationError = ErrorType<ErrorResponse>;
 
 /**
- * @summary Update current user profile
+ * @summary Update current user profile and appearance
  */
 export const useUpdateProfile = <
   TError = ErrorType<ErrorResponse>,
@@ -758,6 +759,92 @@ export const useCreateLink = <
 };
 
 /**
+ * @summary Reorder links
+ */
+export const getReorderLinksUrl = () => {
+  return `/api/dashboard/links/reorder`;
+};
+
+export const reorderLinks = async (
+  reorderLinksRequest: ReorderLinksRequest,
+  options?: RequestInit,
+): Promise<SuccessResponse> => {
+  return customFetch<SuccessResponse>(getReorderLinksUrl(), {
+    ...options,
+    method: "PUT",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(reorderLinksRequest),
+  });
+};
+
+export const getReorderLinksMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof reorderLinks>>,
+    TError,
+    { data: BodyType<ReorderLinksRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof reorderLinks>>,
+  TError,
+  { data: BodyType<ReorderLinksRequest> },
+  TContext
+> => {
+  const mutationKey = ["reorderLinks"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof reorderLinks>>,
+    { data: BodyType<ReorderLinksRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return reorderLinks(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ReorderLinksMutationResult = NonNullable<
+  Awaited<ReturnType<typeof reorderLinks>>
+>;
+export type ReorderLinksMutationBody = BodyType<ReorderLinksRequest>;
+export type ReorderLinksMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Reorder links
+ */
+export const useReorderLinks = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof reorderLinks>>,
+    TError,
+    { data: BodyType<ReorderLinksRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof reorderLinks>>,
+  TError,
+  { data: BodyType<ReorderLinksRequest> },
+  TContext
+> => {
+  return useMutation(getReorderLinksMutationOptions(options));
+};
+
+/**
  * @summary Update a link
  */
 export const getUpdateLinkUrl = (linkId: string) => {
@@ -927,3 +1014,246 @@ export const useDeleteLink = <
 > => {
   return useMutation(getDeleteLinkMutationOptions(options));
 };
+
+/**
+ * @summary Record a link click
+ */
+export const getRecordClickUrl = (linkId: string) => {
+  return `/api/analytics/click/${linkId}`;
+};
+
+export const recordClick = async (
+  linkId: string,
+  options?: RequestInit,
+): Promise<SuccessResponse> => {
+  return customFetch<SuccessResponse>(getRecordClickUrl(linkId), {
+    ...options,
+    method: "POST",
+  });
+};
+
+export const getRecordClickMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof recordClick>>,
+    TError,
+    { linkId: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof recordClick>>,
+  TError,
+  { linkId: string },
+  TContext
+> => {
+  const mutationKey = ["recordClick"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof recordClick>>,
+    { linkId: string }
+  > = (props) => {
+    const { linkId } = props ?? {};
+
+    return recordClick(linkId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RecordClickMutationResult = NonNullable<
+  Awaited<ReturnType<typeof recordClick>>
+>;
+
+export type RecordClickMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Record a link click
+ */
+export const useRecordClick = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof recordClick>>,
+    TError,
+    { linkId: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof recordClick>>,
+  TError,
+  { linkId: string },
+  TContext
+> => {
+  return useMutation(getRecordClickMutationOptions(options));
+};
+
+/**
+ * @summary Record a profile view
+ */
+export const getRecordViewUrl = (username: string) => {
+  return `/api/analytics/view/${username}`;
+};
+
+export const recordView = async (
+  username: string,
+  options?: RequestInit,
+): Promise<SuccessResponse> => {
+  return customFetch<SuccessResponse>(getRecordViewUrl(username), {
+    ...options,
+    method: "POST",
+  });
+};
+
+export const getRecordViewMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof recordView>>,
+    TError,
+    { username: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof recordView>>,
+  TError,
+  { username: string },
+  TContext
+> => {
+  const mutationKey = ["recordView"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof recordView>>,
+    { username: string }
+  > = (props) => {
+    const { username } = props ?? {};
+
+    return recordView(username, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RecordViewMutationResult = NonNullable<
+  Awaited<ReturnType<typeof recordView>>
+>;
+
+export type RecordViewMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Record a profile view
+ */
+export const useRecordView = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof recordView>>,
+    TError,
+    { username: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof recordView>>,
+  TError,
+  { username: string },
+  TContext
+> => {
+  return useMutation(getRecordViewMutationOptions(options));
+};
+
+/**
+ * @summary Get analytics for current user
+ */
+export const getGetAnalyticsUrl = () => {
+  return `/api/dashboard/analytics`;
+};
+
+export const getAnalytics = async (
+  options?: RequestInit,
+): Promise<AnalyticsData> => {
+  return customFetch<AnalyticsData>(getGetAnalyticsUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetAnalyticsQueryKey = () => {
+  return [`/api/dashboard/analytics`] as const;
+};
+
+export const getGetAnalyticsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getAnalytics>>,
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getAnalytics>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetAnalyticsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getAnalytics>>> = ({
+    signal,
+  }) => getAnalytics({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getAnalytics>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetAnalyticsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getAnalytics>>
+>;
+export type GetAnalyticsQueryError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Get analytics for current user
+ */
+
+export function useGetAnalytics<
+  TData = Awaited<ReturnType<typeof getAnalytics>>,
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getAnalytics>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetAnalyticsQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}

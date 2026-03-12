@@ -3,12 +3,11 @@
  * Do not edit manually.
  * Api
  * LinkBio API specification
- * OpenAPI spec version: 0.1.0
+ * OpenAPI spec version: 0.2.0
  */
 import * as zod from "zod";
 
 /**
- * Returns server health status
  * @summary Health check
  */
 export const HealthCheckResponse = zod.object({
@@ -44,6 +43,26 @@ export const LoginResponse = zod.object({
     bio: zod.string().optional(),
     avatarUrl: zod.string().optional(),
     createdAt: zod.string().optional(),
+    appearance: zod
+      .object({
+        theme: zod
+          .enum(["dark", "light", "neon", "gradient", "glass", "minimal"])
+          .optional(),
+        bgColor: zod.string().optional(),
+        bgGradientFrom: zod.string().optional(),
+        bgGradientTo: zod.string().optional(),
+        bgGradientAngle: zod.number().optional(),
+        textColor: zod.string().optional(),
+        btnStyle: zod
+          .enum(["solid", "outline", "ghost", "pill", "shadow", "neon"])
+          .optional(),
+        btnRadius: zod.number().optional(),
+        btnShadow: zod.boolean().optional(),
+        fontStyle: zod
+          .enum(["inter", "poppins", "roboto", "mono", "serif", "display"])
+          .optional(),
+      })
+      .optional(),
   }),
   token: zod.string(),
 });
@@ -66,6 +85,26 @@ export const GetMeResponse = zod.object({
   bio: zod.string().optional(),
   avatarUrl: zod.string().optional(),
   createdAt: zod.string().optional(),
+  appearance: zod
+    .object({
+      theme: zod
+        .enum(["dark", "light", "neon", "gradient", "glass", "minimal"])
+        .optional(),
+      bgColor: zod.string().optional(),
+      bgGradientFrom: zod.string().optional(),
+      bgGradientTo: zod.string().optional(),
+      bgGradientAngle: zod.number().optional(),
+      textColor: zod.string().optional(),
+      btnStyle: zod
+        .enum(["solid", "outline", "ghost", "pill", "shadow", "neon"])
+        .optional(),
+      btnRadius: zod.number().optional(),
+      btnShadow: zod.boolean().optional(),
+      fontStyle: zod
+        .enum(["inter", "poppins", "roboto", "mono", "serif", "display"])
+        .optional(),
+    })
+    .optional(),
 });
 
 /**
@@ -79,21 +118,68 @@ export const GetPublicProfileResponse = zod.object({
   username: zod.string(),
   bio: zod.string().optional(),
   avatarUrl: zod.string().optional(),
+  appearance: zod
+    .object({
+      theme: zod
+        .enum(["dark", "light", "neon", "gradient", "glass", "minimal"])
+        .optional(),
+      bgColor: zod.string().optional(),
+      bgGradientFrom: zod.string().optional(),
+      bgGradientTo: zod.string().optional(),
+      bgGradientAngle: zod.number().optional(),
+      textColor: zod.string().optional(),
+      btnStyle: zod
+        .enum(["solid", "outline", "ghost", "pill", "shadow", "neon"])
+        .optional(),
+      btnRadius: zod.number().optional(),
+      btnShadow: zod.boolean().optional(),
+      fontStyle: zod
+        .enum(["inter", "poppins", "roboto", "mono", "serif", "display"])
+        .optional(),
+    })
+    .optional(),
   links: zod.array(
     zod.object({
       id: zod.string(),
       title: zod.string(),
       url: zod.string(),
       order: zod.number(),
+      enabled: zod.boolean(),
+      icon: zod.string().optional(),
       userId: zod.string(),
+      clicks: zod.number().optional(),
     }),
   ),
 });
 
 /**
- * @summary Update current user profile
+ * @summary Update current user profile and appearance
  */
-export const UpdateProfileBody = zod.unknown();
+export const UpdateProfileBody = zod.object({
+  username: zod.string().optional(),
+  bio: zod.string().optional(),
+  avatarUrl: zod.string().optional(),
+  appearance: zod
+    .object({
+      theme: zod
+        .enum(["dark", "light", "neon", "gradient", "glass", "minimal"])
+        .optional(),
+      bgColor: zod.string().optional(),
+      bgGradientFrom: zod.string().optional(),
+      bgGradientTo: zod.string().optional(),
+      bgGradientAngle: zod.number().optional(),
+      textColor: zod.string().optional(),
+      btnStyle: zod
+        .enum(["solid", "outline", "ghost", "pill", "shadow", "neon"])
+        .optional(),
+      btnRadius: zod.number().optional(),
+      btnShadow: zod.boolean().optional(),
+      fontStyle: zod
+        .enum(["inter", "poppins", "roboto", "mono", "serif", "display"])
+        .optional(),
+    })
+    .optional(),
+});
 
 export const UpdateProfileResponse = zod.object({
   id: zod.string(),
@@ -102,6 +188,26 @@ export const UpdateProfileResponse = zod.object({
   bio: zod.string().optional(),
   avatarUrl: zod.string().optional(),
   createdAt: zod.string().optional(),
+  appearance: zod
+    .object({
+      theme: zod
+        .enum(["dark", "light", "neon", "gradient", "glass", "minimal"])
+        .optional(),
+      bgColor: zod.string().optional(),
+      bgGradientFrom: zod.string().optional(),
+      bgGradientTo: zod.string().optional(),
+      bgGradientAngle: zod.number().optional(),
+      textColor: zod.string().optional(),
+      btnStyle: zod
+        .enum(["solid", "outline", "ghost", "pill", "shadow", "neon"])
+        .optional(),
+      btnRadius: zod.number().optional(),
+      btnShadow: zod.boolean().optional(),
+      fontStyle: zod
+        .enum(["inter", "poppins", "roboto", "mono", "serif", "display"])
+        .optional(),
+    })
+    .optional(),
 });
 
 /**
@@ -112,7 +218,10 @@ export const GetLinksResponseItem = zod.object({
   title: zod.string(),
   url: zod.string(),
   order: zod.number(),
+  enabled: zod.boolean(),
+  icon: zod.string().optional(),
   userId: zod.string(),
+  clicks: zod.number().optional(),
 });
 export const GetLinksResponse = zod.array(GetLinksResponseItem);
 
@@ -122,6 +231,19 @@ export const GetLinksResponse = zod.array(GetLinksResponseItem);
 export const CreateLinkBody = zod.object({
   title: zod.string(),
   url: zod.string(),
+  icon: zod.string().optional(),
+});
+
+/**
+ * @summary Reorder links
+ */
+export const ReorderLinksBody = zod.object({
+  linkIds: zod.array(zod.string()),
+});
+
+export const ReorderLinksResponse = zod.object({
+  success: zod.boolean(),
+  message: zod.string().optional(),
 });
 
 /**
@@ -135,6 +257,8 @@ export const UpdateLinkBody = zod.object({
   title: zod.string().optional(),
   url: zod.string().optional(),
   order: zod.number().optional(),
+  enabled: zod.boolean().optional(),
+  icon: zod.string().optional(),
 });
 
 export const UpdateLinkResponse = zod.object({
@@ -142,7 +266,10 @@ export const UpdateLinkResponse = zod.object({
   title: zod.string(),
   url: zod.string(),
   order: zod.number(),
+  enabled: zod.boolean(),
+  icon: zod.string().optional(),
   userId: zod.string(),
+  clicks: zod.number().optional(),
 });
 
 /**
@@ -155,4 +282,55 @@ export const DeleteLinkParams = zod.object({
 export const DeleteLinkResponse = zod.object({
   success: zod.boolean(),
   message: zod.string().optional(),
+});
+
+/**
+ * @summary Record a link click
+ */
+export const RecordClickParams = zod.object({
+  linkId: zod.coerce.string(),
+});
+
+export const RecordClickResponse = zod.object({
+  success: zod.boolean(),
+  message: zod.string().optional(),
+});
+
+/**
+ * @summary Record a profile view
+ */
+export const RecordViewParams = zod.object({
+  username: zod.coerce.string(),
+});
+
+export const RecordViewResponse = zod.object({
+  success: zod.boolean(),
+  message: zod.string().optional(),
+});
+
+/**
+ * @summary Get analytics for current user
+ */
+export const GetAnalyticsResponse = zod.object({
+  totalViews: zod.number(),
+  totalClicks: zod.number(),
+  linkStats: zod.array(
+    zod.object({
+      linkId: zod.string(),
+      title: zod.string(),
+      clicks: zod.number(),
+    }),
+  ),
+  recentViews: zod.array(
+    zod.object({
+      date: zod.string(),
+      count: zod.number(),
+    }),
+  ),
+  recentClicks: zod.array(
+    zod.object({
+      date: zod.string(),
+      count: zod.number(),
+    }),
+  ),
 });
